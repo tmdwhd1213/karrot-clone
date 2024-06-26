@@ -18,7 +18,9 @@
 @layer components {
   /* apply directive는 React의 컴포넌트처럼 한번에 묶어놓고 부모에서 tailwind의
 클래스네임을 쓰는 것처럼 css 파일 안에서 작성할 수 있음. */
-  .btn {
-    @apply bg-cyan-200 text-right;
+  .primary-btn {
+    @apply w-full bg-orange-500 text-white 
+    rounded-md text-center
+    hover:bg-orange-400 transition-colors;
   }
 }
