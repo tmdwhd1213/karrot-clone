@@ -44,7 +44,11 @@ export default function Home() {
                     <span className="group-focus-within:block hidden">
                       Make sure it is a valid email...
                     </span>
-                    <button>Submit</button>
+                    {/* 하나의 방대한 CSS파일이 아닌 컴파일러에서 불러옴. JIT 컴파일러 */}
+                    {/* tailwind.config.ts의 theme.extend.borderRadius.sexy-name 에서 불러옴*/}
+                    <button className="w-full bg-black text-[#ffccaa] rounded-sexy-name">
+                      Submit
+                    </button>
                   </div>
                 </div>
               )}
