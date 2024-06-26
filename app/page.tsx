@@ -49,6 +49,7 @@ export default function Home() {
                     <button className="w-full bg-black text-[#ffccaa] rounded-sexy-name">
                       Submit
                     </button>
+                    <button className="btn">apply Directives</button>
                   </div>
                 </div>
               )}
