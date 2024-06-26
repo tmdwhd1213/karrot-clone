@@ -5,7 +5,7 @@
 /* layer directive: 다른 다이렉티브를 확장하거나 덮어쓸 수 있다. */
 @layer base {
   a {
-    @apply text-blue-500;
+    @apply text-orange-500;
   }
 }
 
