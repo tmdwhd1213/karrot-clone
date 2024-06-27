@@ -1,6 +1,10 @@
 "use server";
 import { z } from "zod";
 
+const passwordRegex = new RegExp(
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
+);
+
 const checkUsername = (username: string) => !username.includes("병신");
 
 const checkPasswords = ({
@@ -22,12 +26,21 @@ const formSchema = z
       })
       .min(3, "너무 짧아요. 3글자 이상 입력해주세요.")
       .max(10, "너무 길어요. 10글자 이하로 입력해주세요.")
+      .trim()
+      .toLowerCase()
       .refine(checkUsername, "욕설을 포함한 단어는 이름으로 설정할 수 없어요."),
-    email: z.string().email("이메일 형식이 올바른지 확인해주세요."),
-    password: z.string().min(10, "비밀번호는 최소 10글자 이상 입력해주세요."),
-    confirmPassword: z
+    email: z
       .string()
-      .min(10, "비밀번호는 최소 10글자 이상 입력해주세요."),
+      .email("이메일 형식이 올바른지 확인해주세요.")
+      .toLowerCase(),
+    password: z
+      .string()
+      .min(10, "비밀번호는 최소 10글자 이상 입력해주세요.")
+      .regex(
+        passwordRegex,
+        "비밀번호는 소문자, 대문자, 숫자, 특수문자를 포함해야 합니다."
+      ),
+    confirmPassword: z.string(),
   })
   // 전체 form에 대한 커스텀 에러를 만들었지만, 비밀번호 확인란 UI에 떠야함.
   // 따라서 2번째 인수에 문자열이 아닌 message와 path 프로퍼티를 가진 객체를 전달해
@@ -50,5 +63,7 @@ export async function createAccount(prevState: any, formData: FormData) {
   if (!result.success) {
     console.log(result.error.flatten());
     return result.error.flatten();
+  } else {
+    console.log(result.data);
   }
 }
