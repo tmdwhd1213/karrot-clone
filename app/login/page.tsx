@@ -7,6 +7,9 @@ import { useFormState, useFormStatus } from "react-dom";
 import { onSubmit } from "./actions";
 
 export default function LoginPage() {
+  // 처음 보낼 때 server에 초기값인 2번째 인수(null)이 보내지고,
+  // 다시 보낼 때는 1번째 인수의 리턴 값인 state를 server에 보낸다.
+  // action의 결과를 얻기위해서(return 값) useFormState 훅을 사용했음.
   const [state, action] = useFormState(onSubmit, null);
 
   // ReactJS의 useFormStatus 훅 -> Form의 자식에서만 쓸 수 있다. (폼에서는 못 씀)
