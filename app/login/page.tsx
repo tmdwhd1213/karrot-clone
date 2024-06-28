@@ -1,7 +1,7 @@
 "use client";
 
-import FormInput from "../components/form-input";
-import FormButton from "../components/form-button";
+import Input from "../components/input";
+import Button from "../components/button";
 import SocialLogin from "../components/social-login";
 import { useFormState, useFormStatus } from "react-dom";
 import { onSubmit } from "./actions";
@@ -32,21 +32,21 @@ export default function LoginPage() {
         <h2 className="text-xl">Log in with E-mail and password.</h2>
       </div>
       <form className="flex flex-col gap-3" action={dispatch}>
-        <FormInput
+        <Input
           type="email"
           placeholder="Email"
           name="email"
           required
           errors={[]}
         />
-        <FormInput
+        <Input
           type="password"
           placeholder="Password"
           name="password"
           required
           errors={state?.errors ?? []}
         />
-        <FormButton text="로그인" />
+        <Button text="로그인" />
       </form>
       <SocialLogin />
     </div>

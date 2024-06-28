@@ -5,7 +5,7 @@
 /* layer directive: 다른 다이렉티브를 확장하거나 덮어쓸 수 있다. */
 @layer base {
   a {
-    @apply text-orange-500;
+    @apply text-green-500;
   }
 }
 
@@ -19,8 +19,8 @@
   /* apply directive는 React의 컴포넌트처럼 한번에 묶어놓고 부모에서 tailwind의
 클래스네임을 쓰는 것처럼 css 파일 안에서 작성할 수 있음. */
   .primary-btn {
-    @apply w-full bg-orange-500 text-white 
+    @apply w-full bg-green-500 text-white 
     rounded-md text-center
-    hover:bg-orange-400 transition-colors;
+    hover:bg-green-400 transition-colors;
   }
 }
