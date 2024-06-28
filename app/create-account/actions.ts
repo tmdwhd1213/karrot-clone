@@ -1,9 +1,12 @@
 "use server";
 import { z } from "zod";
-
-const passwordRegex = new RegExp(
-  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
-);
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX,
+  PASSWORD_REGEX_ERROR,
+  USERNAME_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+} from "../lib/constants";
 
 const checkUsername = (username: string) => !username.includes("병신");
 
@@ -24,8 +27,8 @@ const formSchema = z
         invalid_type_error: "이름에는 문자만 입력해주세요.",
         required_error: "이름을 입력해주세요.",
       })
-      .min(3, "너무 짧아요. 3글자 이상 입력해주세요.")
-      .max(10, "너무 길어요. 10글자 이하로 입력해주세요.")
+      .min(USERNAME_MIN_LENGTH, "너무 짧아요. 3자 이상 입력해주세요.")
+      .max(USERNAME_MAX_LENGTH, "너무 길어요. 10자 이하로 입력해주세요.")
       .trim()
       .toLowerCase()
       .refine(checkUsername, "욕설을 포함한 단어는 이름으로 설정할 수 없어요."),
@@ -35,11 +38,8 @@ const formSchema = z
       .toLowerCase(),
     password: z
       .string()
-      .min(10, "비밀번호는 최소 10글자 이상 입력해주세요.")
-      .regex(
-        passwordRegex,
-        "비밀번호는 소문자, 대문자, 숫자, 특수문자를 포함해야 합니다."
-      ),
+      .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상 입력해주세요.")
+      .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirmPassword: z.string(),
   })
   // 전체 form에 대한 커스텀 에러를 만들었지만, 비밀번호 확인란 UI에 떠야함.
