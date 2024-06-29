@@ -8,6 +8,9 @@ import {
   USERNAME_MIN_LENGTH,
 } from "../lib/constants";
 import db from "../lib/db";
+import bcrypt from "bcrypt";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
 
 const checkUsername = (username: string) => !username.includes("병신");
 
@@ -94,9 +97,22 @@ export async function createAccount(prevState: any, formData: FormData) {
     return result.error.flatten();
   } else {
     // 비밀번호 암호화(hashing)
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
     // user를 db에 저장
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+    console.log(user);
     // 저장되면 로그인되게 구현
+    // getIronSession(cookies())
+    // cookie(asdasdsd랜덤) -> {id: 6} 이런식으로 변환
     // redirect "/home"
-    console.log();
   }
 }
