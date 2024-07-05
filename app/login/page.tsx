@@ -19,7 +19,7 @@ export default function LoginPage() {
       method: "POST",
       body: JSON.stringify({
         username: "승종",
-        password: "a12345678",
+        password: "a123456783",
       }),
     });
     console.log(await response.json());
