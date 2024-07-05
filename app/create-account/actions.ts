@@ -11,6 +11,7 @@ import db from "../lib/db";
 import bcrypt from "bcrypt";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const checkUsername = (username: string) => !username.includes("병신");
 
@@ -83,6 +84,7 @@ const formSchema = z
   });
 
 export async function createAccount(prevState: any, formData: FormData) {
+  console.log(cookies());
   const data = {
     username: formData.get("username"),
     email: formData.get("email"),
@@ -111,8 +113,15 @@ export async function createAccount(prevState: any, formData: FormData) {
     });
     console.log(user);
     // 저장되면 로그인되게 구현
-    // getIronSession(cookies())
+    const cookie = await getIronSession(cookies(), {
+      cookieName: "delicious-cucumber",
+      password: process.env.COOKIE_PASSWORD!, // .env에 무조건 존재한다는 것을 typescript에 알려주기 위함.
+    });
+    //@ts-ignore
+    cookie.id = user.id;
+    await cookie.save();
     // cookie(asdasdsd랜덤) -> {id: 6} 이런식으로 변환
     // redirect "/home"
+    redirect("/profile");
   }
 }
