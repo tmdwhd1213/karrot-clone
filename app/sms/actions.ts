@@ -11,6 +11,7 @@ import twilio from "twilio";
 
 interface ActionState {
   token: boolean;
+  phone?: string;
 }
 
 const phoneSchema = z
@@ -104,19 +105,20 @@ export async function smsVerification(
         process.env.TWILIO_AUTH_TOKEN
       );
       await client.messages.create({
-        body: `당신의 오이마켓의 인증번호는: ${token}이에요`,
+        body: `오이마켓 인증번호: ${token}`,
         from: process.env.TWILIO_PHONE_NUMBER!,
         to: process.env.MY_PHONE_NUMBER!, // 원래는 그러나 체험판이므로 내 폰번호 result.data
       });
       return {
         token: true,
+        phone,
       };
     }
   } else {
     const result = await tokenSchema.safeParseAsync(token);
     if (!result.success) {
       return {
-        token: true,
+        ...prevState,
         // return the errors
         error: result.error.flatten(),
       };
@@ -129,9 +131,16 @@ export async function smsVerification(
         select: {
           id: true,
           userId: true,
+          user: true,
         },
       });
       if (token) {
+        if (prevState.phone !== token.user.phone) {
+          return {
+            ...prevState,
+            error: { formErrors: ["올바르지 않은 인증번호입니다."] },
+          };
+        }
         await saveSession(token.userId);
         await db.sMSToken.delete({
           where: {
