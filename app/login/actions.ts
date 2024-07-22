@@ -9,7 +9,7 @@ import {
 } from "../lib/constants";
 import db from "../lib/db";
 import { redirect } from "next/navigation";
-import getSession from "../lib/session";
+import { saveSession } from "../lib/utils";
 
 const formSchema = z.object({
   email: z.string().email().toLowerCase(),
@@ -45,9 +45,7 @@ export async function login(prevState: any, formData: FormData) {
       user!.password ?? "xxxx"
     );
     if (ok) {
-      const session = await getSession();
-      session.id = user!.id;
-      await session.save();
+      await saveSession(user!.id);
       redirect("/profile");
     } else {
       return {
