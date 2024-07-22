@@ -6,8 +6,8 @@ import {
   PASSWORD_REGEX_ERROR,
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
-} from "../lib/constants";
-import db from "../lib/db";
+} from "../../lib/constants";
+import db from "../../lib/db";
 import bcrypt from "bcrypt";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";

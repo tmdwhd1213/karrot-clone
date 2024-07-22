@@ -1,8 +1,8 @@
 "use client";
 
-import Input from "../components/input";
-import Button from "../components/button";
-import SocialLogin from "../components/social-login";
+import Input from "../../components/input";
+import Button from "../../components/button";
+import SocialLogin from "../../components/social-login";
 import { useFormState, useFormStatus } from "react-dom";
 import { login } from "./actions";
 
