@@ -9,7 +9,7 @@ import {
 } from "../../lib/constants";
 import db from "../../lib/db";
 import { redirect } from "next/navigation";
-import { saveSession } from "../../lib/utils";
+import { saveSession } from "@/app/lib/session";
 
 const formSchema = z.object({
   email: z.string().email().toLowerCase(),

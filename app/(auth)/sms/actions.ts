@@ -2,12 +2,12 @@
 
 import validator from "validator";
 import { z } from "zod";
-import { TOKEN_MAX, TOKEN_MIN } from "../lib/constants";
+import { TOKEN_MAX, TOKEN_MIN } from "@/app/lib/constants";
 import { redirect } from "next/navigation";
-import db from "../lib/db";
+import db from "@/app/lib/db";
 import crypto from "crypto";
-import { saveSession } from "../lib/utils";
 import twilio from "twilio";
+import { saveSession } from "@/app/lib/session";
 
 interface ActionState {
   token: boolean;

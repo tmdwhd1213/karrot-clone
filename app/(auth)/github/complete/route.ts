@@ -1,9 +1,9 @@
 import db from "@/app/lib/db";
+import { saveSession } from "@/app/lib/session";
 import {
   getAccessToken,
   getGithubEmail,
   getGithubProfile,
-  saveSession,
 } from "@/app/lib/utils";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";

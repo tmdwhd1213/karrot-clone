@@ -1,11 +1,3 @@
-import getSession from "./session";
-
-export async function saveSession(id: number) {
-  const session = await getSession();
-  session.id = id;
-  await session.save();
-}
-
 export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
