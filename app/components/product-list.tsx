@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InitialProducts } from "../(tabs)/product/page";
 import ListProduct from "./list-product";
 import { getMoreProducts } from "../(tabs)/product/action";
@@ -23,6 +23,24 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
+  const trigger = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (
+        entries: IntersectionObserverEntry[],
+        observer: IntersectionObserver
+      ) => {
+        console.log(entries);
+      }
+    );
+    if (trigger.current !== null) {
+      observer.observe(trigger.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [page]);
   const onLoadMoreClick = async () => {
     setIsLoading(true);
     const newProducts = await getMoreProducts(page + 1);
@@ -39,17 +57,13 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       {products.map((product) => (
         <ListProduct key={product.id} {...product} />
       ))}
-      {isLastPage ? (
-        <p className="text-red-500">더 가져올 물건이 없어요.</p>
-      ) : (
-        <button
-          disabled={isLoading}
-          onClick={onLoadMoreClick}
-          className="text-sm font-semibold bg-green-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
-        >
-          {isLoading ? "가져오는 중..." : "더 가져오기"}
-        </button>
-      )}
+      <span
+        ref={trigger}
+        // 500vh -> 수직 화면 높이의 5배
+        className="mt-[300vh] mb-96 text-sm font-semibold bg-green-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
+      >
+        {isLoading ? "가져오는 중..." : "더 가져오기"}
+      </span>
     </div>
   );
 }
