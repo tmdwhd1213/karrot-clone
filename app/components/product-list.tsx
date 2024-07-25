@@ -26,11 +26,29 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const trigger = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (
+      async (
         entries: IntersectionObserverEntry[],
         observer: IntersectionObserver
       ) => {
-        console.log(entries);
+        const element = entries[0];
+        if (element.isIntersecting && trigger.current) {
+          observer.unobserve(trigger.current);
+          setIsLoading(true);
+          const newProducts = await getMoreProducts(page + 1);
+
+          if (newProducts.length !== 0) {
+            setProducts((prev) => [...prev, ...newProducts]);
+            setPage((prev) => prev + 1);
+          } else {
+            setIsLastPage(true);
+          }
+          setIsLoading(false);
+        }
+      },
+      {
+        // trigger가 뷰에 완전히 보일 때 isIntersecting === true
+        // 0.5는 절반
+        threshold: 1.0,
       }
     );
     if (trigger.current !== null) {
@@ -41,29 +59,21 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       observer.disconnect();
     };
   }, [page]);
-  const onLoadMoreClick = async () => {
-    setIsLoading(true);
-    const newProducts = await getMoreProducts(page + 1);
-    if (newProducts.length !== 0) {
-      setPage((prev) => prev + 1);
-      setProducts((prev) => [...prev, ...newProducts]);
-    } else {
-      setIsLastPage(true);
-    }
-    setIsLoading(false);
-  };
+
   return (
     <div className="p-5 flex flex-col gap-5">
       {products.map((product) => (
         <ListProduct key={product.id} {...product} />
       ))}
-      <span
-        ref={trigger}
-        // 500vh -> 수직 화면 높이의 5배
-        className="mt-[300vh] mb-96 text-sm font-semibold bg-green-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
-      >
-        {isLoading ? "가져오는 중..." : "더 가져오기"}
-      </span>
+      {!isLastPage ? (
+        <span
+          ref={trigger}
+          // 500vh -> 수직 화면 높이의 5배
+          className="text-sm font-semibold bg-green-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
+        >
+          {isLoading ? "가져오는 중..." : "더 가져오기"}
+        </span>
+      ) : null}
     </div>
   );
 }
