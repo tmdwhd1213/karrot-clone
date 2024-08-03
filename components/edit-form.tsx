@@ -3,8 +3,9 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
+// import { debounce } from "lodash";
 
 interface ProductType {
   id: number;
@@ -32,9 +33,23 @@ export default function EditForm({
   product: UserProdcutType;
 }) {
   const [preview, setPreview] = useState("");
+  const imageRef = useRef(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    price: 0,
+    description: "",
+    photo: "",
+  });
   useEffect(() => {
     setPreview(product.photo);
-  }, []);
+    setFormData({
+      photo: product.photo,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+    });
+  }, [product]);
+
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { files },
@@ -44,14 +59,24 @@ export default function EditForm({
     }
     const file = files[0];
     const url = URL.createObjectURL(file);
-    console.log(url);
+
     setPreview(url);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const [state, action] = useFormState<any>(uploadProduct, null);
 
   return (
     <div>
       <form action={action} className="p-5 flex flex-col gap-5">
+        <input id="id" name="id" className="hidden" value={product.id} />
         <label
           htmlFor="photo"
           className="border-2 aspect-square flex items-center justify-center flex-col text-neutral-300 border-neutral-300 rounded-md border-dashed cursor-pointer bg-center bg-cover"
@@ -69,19 +94,43 @@ export default function EditForm({
             </>
           ) : null}
         </label>
-        <input
-          onChange={onImageChange}
-          type="file"
-          id="photo"
-          name="photo"
-          accept="image/*"
-          className="hidden"
-        />
+        {!imageRef.current ? (
+          <>
+            <input
+              onChange={onImageChange}
+              type="text"
+              value={formData.photo}
+              id="tempPhoto"
+              name="tempPhoto"
+              className="hidden"
+            />
+            <input
+              onChange={onImageChange}
+              type="file"
+              id="photo"
+              name="photo"
+              accept="image/*"
+              className="hidden"
+            />
+          </>
+        ) : (
+          <input
+            onChange={onImageChange}
+            type="file"
+            id="photo"
+            name="photo"
+            accept="image/*"
+            className="hidden"
+          />
+        )}
+
         <Input
           name="title"
           required
           placeholder="제목"
           type="text"
+          value={formData.title}
+          onChange={handleChange}
           errors={state?.fieldErrors.title}
         />
         <Input
@@ -89,6 +138,8 @@ export default function EditForm({
           type="number"
           required
           placeholder="가격"
+          value={formData.price}
+          onChange={handleChange}
           errors={state?.fieldErrors.price}
         />
         <Input
@@ -96,6 +147,8 @@ export default function EditForm({
           type="text"
           required
           placeholder="자세한 설명"
+          value={formData.description}
+          onChange={handleChange}
           errors={state?.fieldErrors.description}
         />
         <Button text="작성 완료" />

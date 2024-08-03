@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const productSchema = z.object({
   photo: z.string({
@@ -27,11 +28,17 @@ export async function uploadProduct(_: any, formData: FormData) {
     title: formData.get("title"),
     price: formData.get("price"),
     description: formData.get("description"),
+    id: formData.get("id"),
+    tempPhoto: formData.get("tempPhoto"),
   };
+
   if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
     await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
-    data.photo = `/${data.photo.name}`;
+    // 이미지 파일이 안 올라온 경우(같은 이미지 쓸 때)
+    data.photo.size === 0
+      ? (data.photo = data.tempPhoto)
+      : (data.photo = `/${data.photo.name}`);
   }
   const result = productSchema.safeParse(data);
   if (!result.success) {
@@ -39,7 +46,10 @@ export async function uploadProduct(_: any, formData: FormData) {
   } else {
     const session = await getSession();
     if (session.id) {
-      const product = await db.product.create({
+      const product = await db.product.update({
+        where: {
+          id: +data.id!,
+        },
         data: {
           title: result.data.title,
           description: result.data.description,
@@ -55,6 +65,8 @@ export async function uploadProduct(_: any, formData: FormData) {
           id: true,
         },
       });
+      revalidatePath("/home");
+      revalidateTag("product-detail");
       redirect(`/products/${product.id}`);
       //redirect("/products")
     }
