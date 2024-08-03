@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { InitialProducts } from "../app/(tabs)/home/page";
 import ListProduct from "./list-product";
-import { getMoreProducts } from "../app/(tabs)/home/action";
+import { getMoreProducts } from "../app/(tabs)/home/actions";
 
 interface ProductListProps {
   // 방법 1. 원하는 곳에서 긁어서 붙여넣기 (쉬움)

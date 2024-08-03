@@ -30,8 +30,9 @@ export async function uploadProduct(_: any, formData: FormData) {
   };
   if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
-    await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
-    data.photo = `/${data.photo.name}`;
+    const photoName = decodeURIComponent(data.photo.name);
+    await fs.appendFile(`./public/${photoName}`, Buffer.from(photoData));
+    data.photo = `/${photoName}`;
   }
   const result = productSchema.safeParse(data);
   if (!result.success) {

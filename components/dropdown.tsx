@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
+import DeleteModal from "./delete-modal";
 
 interface DropdownMenuProps {
   isOpen: boolean;
   toggleDropdown: () => void;
   id: number;
   isOwner: boolean;
+  setIsOpen: (value: SetStateAction<boolean>) => void;
+  deleteHandler: () => void;
 }
 
 export default function Dropdown({
@@ -15,6 +18,8 @@ export default function Dropdown({
   toggleDropdown,
   id,
   isOwner,
+  setIsOpen,
+  deleteHandler,
 }: DropdownMenuProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +53,9 @@ export default function Dropdown({
           <Link className="px-5 py-2.5 text-white" href={`/product/edit/${id}`}>
             게시글 수정
           </Link>
-          <button className="px-5 py-2.5 text-left">삭제</button>
+          <button onClick={deleteHandler} className="px-5 py-2.5 text-left">
+            삭제
+          </button>
         </>
       ) : (
         <div>주인 아니지롱 (공사중)</div>
