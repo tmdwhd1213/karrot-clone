@@ -1,18 +1,17 @@
 "use server";
 
 import validator from "validator";
-import { z } from "zod";
-import { TOKEN_MAX, TOKEN_MIN } from "@/app/lib/constants";
+import { typeToFlattenedError, z } from "zod";
+import { TOKEN_MAX, TOKEN_MIN } from "@/lib/constants";
 import { redirect } from "next/navigation";
-import db from "@/app/lib/db";
+import db from "@/lib/db";
 import crypto from "crypto";
 import twilio from "twilio";
-import { saveSession } from "@/app/lib/session";
+import { saveSession } from "@/lib/session";
 
-interface ActionState {
+type ActionState = {
   token: boolean;
-  phone?: string;
-}
+};
 
 const phoneSchema = z
   .string()
@@ -111,7 +110,6 @@ export async function smsVerification(
       });
       return {
         token: true,
-        phone,
       };
     }
   } else {
@@ -135,12 +133,12 @@ export async function smsVerification(
         },
       });
       if (token) {
-        if (prevState.phone !== token.user.phone) {
-          return {
-            ...prevState,
-            error: { formErrors: ["올바르지 않은 인증번호입니다."] },
-          };
-        }
+        // if (prevState.phone !== token.user.phone) {
+        //   return {
+        //     ...prevState,
+        //     error: { formErrors: ["올바르지 않은 인증번호입니다."] },
+        //   };
+        // }
         await saveSession(token.userId);
         await db.sMSToken.delete({
           where: {

@@ -1,6 +1,6 @@
 "use server";
 
-import db from "@/app/lib/db";
+import db from "@/lib/db";
 
 const ITEMS_TO_DISPLAY = 1;
 

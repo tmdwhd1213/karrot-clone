@@ -1,11 +1,10 @@
 "use client";
 
-import Input from "../components/input";
-import Button from "../components/button";
-import SocialLogin from "../components/social-login";
+import Input from "@/components/input";
+import Button from "@/components/button";
 import { useFormState } from "react-dom";
 import { smsVerification } from "./actions";
-import { TOKEN_MAX, TOKEN_MIN } from "../lib/constants";
+import { TOKEN_MAX, TOKEN_MIN } from "@/lib/constants";
 
 const initialState = {
   token: false,

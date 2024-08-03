@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { InitialProducts } from "../(tabs)/product/page";
+import { InitialProducts } from "../app/(tabs)/home/page";
 import ListProduct from "./list-product";
-import { getMoreProducts } from "../(tabs)/product/action";
+import { getMoreProducts } from "../app/(tabs)/home/action";
 
 interface ProductListProps {
   // 방법 1. 원하는 곳에서 긁어서 붙여넣기 (쉬움)
@@ -65,7 +65,8 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       {products.map((product) => (
         <ListProduct key={product.id} {...product} />
       ))}
-      {!isLastPage ? (
+      {/* 임시 주석 */}
+      {/* {!isLastPage ? (
         <span
           ref={trigger}
           // 500vh -> 수직 화면 높이의 5배
@@ -73,7 +74,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
         >
           {isLoading ? "가져오는 중..." : "더 가져오기"}
         </span>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

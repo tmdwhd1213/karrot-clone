@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import getSession from "./app/lib/session";
+import getSession from "./lib/session";
 
 interface Routes {
   [key: string]: boolean;
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
     }
   } else {
     if (exists) {
-      return NextResponse.redirect(new URL("/product", request.url));
+      return NextResponse.redirect(new URL("/home", request.url));
     }
   }
 }

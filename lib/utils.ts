@@ -1,3 +1,5 @@
+import db from "./db";
+
 export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
@@ -52,4 +54,23 @@ export async function getGithubEmail(access_token: string) {
   });
 
   return emailResponse;
+}
+
+export async function getProduct(id: number) {
+  console.log("물품 전체 히트");
+  const product = await db.product.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  });
+
+  return product;
 }

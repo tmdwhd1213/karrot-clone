@@ -3,12 +3,38 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
-import { uploadProduct } from "./actions";
+import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
-export default function AddProduct() {
+interface ProductType {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  photo: string;
+  created_at: Date;
+  updated_at: Date;
+  userId: number;
+}
+
+interface UserProdcutType extends ProductType {
+  user: {
+    username: string;
+    avatar: string | null;
+  };
+}
+
+export default function EditForm({
+  uploadProduct,
+  product,
+}: {
+  uploadProduct: any;
+  product: UserProdcutType;
+}) {
   const [preview, setPreview] = useState("");
+  useEffect(() => {
+    setPreview(product.photo);
+  }, []);
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { files },
@@ -18,9 +44,11 @@ export default function AddProduct() {
     }
     const file = files[0];
     const url = URL.createObjectURL(file);
+    console.log(url);
     setPreview(url);
   };
-  const [state, action] = useFormState(uploadProduct, null);
+  const [state, action] = useFormState<any>(uploadProduct, null);
+
   return (
     <div>
       <form action={action} className="p-5 flex flex-col gap-5">

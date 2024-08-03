@@ -21,8 +21,8 @@ export default function TabBar() {
   const pathname = usePathname();
   return (
     <div className="bg-neutral-800 fixed bottom-0 w-full mx-auto max-w-screen-md grid grid-cols-5 border-neutral-600 border-t px-5 py-3 *:text-white">
-      <Link href="/product" className="flex flex-col items-center gap-px">
-        {pathname === "/product" ? (
+      <Link href="/home" className="flex flex-col items-center gap-px">
+        {pathname === "/home" ? (
           <SolidHomeIcon className="w-7 h-7" />
         ) : (
           <OutlineHomeIcon className="w-7 h-7" />
@@ -59,7 +59,7 @@ export default function TabBar() {
         ) : (
           <OutlineUserIcon className="w-7 h-7" />
         )}
-        <span>나의 당근</span>
+        <span>나의 오이</span>
       </Link>
     </div>
   );
