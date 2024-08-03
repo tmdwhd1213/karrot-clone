@@ -8,9 +8,21 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Dropdown from "./dropdown";
 
-export default function UpperTabBar() {
+interface UpperTabBarProps {
+  id: number;
+  isOwner: boolean;
+}
+
+export default function UpperTabBar({ id, isOwner }: UpperTabBarProps) {
   const router = useRouter();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   const backHandler = () => {
     router.back();
@@ -30,9 +42,15 @@ export default function UpperTabBar() {
         <button>
           <ShareIcon className="w-8 h-8" />
         </button>
-        <button>
+        <button onClick={toggleDropdown}>
           <EllipsisVerticalIcon className="w-8 h-8" />
         </button>
+        <Dropdown
+          isOpen={isDropdownOpen}
+          toggleDropdown={toggleDropdown}
+          id={id}
+          isOwner={isOwner}
+        />
       </div>
     </div>
   );

@@ -11,10 +11,11 @@ import {
   revalidateTag,
 } from "next/cache";
 import getSession from "@/lib/session";
+import UpperTabBar from "@/components/upper-tab-bar";
 
 // [id]를 db조회한 후 미리 알려줘서 dynamic page를 static page로 바꾸기.
 // 쿠키를 import하면 pre-render를 사용할 수 없음.
-async function getIsOwner(userId: number) {
+export async function getIsOwner(userId: number) {
   const session = await getSession();
   if (session.id) {
     return session.id === userId;
@@ -77,58 +78,53 @@ export default async function ProductDetail({
   const isOwner = await getIsOwner(product.userId);
 
   return (
-    <div>
-      <div className="flex flex-col">
-        <div className="relative aspect-square">
-          <Image
-            fill
-            className="object-cover"
-            src={product.photo}
-            alt={product.title}
-          />
-        </div>
-      </div>
-      <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
-        <div className="size-10 overflow-hidden rounded-full">
-          {product.user.avatar !== null ? (
+    <>
+      <UpperTabBar id={id} isOwner={isOwner} />
+      <div>
+        <div className="flex flex-col">
+          <div className="relative aspect-square">
             <Image
-              src={product.user.avatar}
-              alt={product.user.username}
-              width={40}
-              height={40}
+              fill
+              className="object-cover"
+              src={product.photo}
+              alt={product.title}
             />
-          ) : (
-            <UserIcon />
-          )}
+          </div>
         </div>
-        <div>
-          <h3>{product.user.username}</h3>
+        <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
+          <div className="size-10 overflow-hidden rounded-full">
+            {product.user.avatar !== null ? (
+              <Image
+                src={product.user.avatar}
+                alt={product.user.username}
+                width={40}
+                height={40}
+              />
+            ) : (
+              <UserIcon />
+            )}
+          </div>
+          <div>
+            <h3>{product.user.username}</h3>
+          </div>
         </div>
-      </div>
-      <div className="p-5">
-        <h1 className="text-2xl font-semibold">{product.title}</h1>
-        <p>{product.description}</p>
-      </div>
-      <div className="fixed w-full bottom-0 left-0 p-5 pb-10 bg-neutral-800 flex justify-between items-center">
-        <span className="font-semibold text-lg">
-          {formatToWon(product.price)}원
-        </span>
-        {isOwner ? (
+        <div className="p-5">
+          <h1 className="text-2xl font-semibold">{product.title}</h1>
+          <p>{product.description}</p>
+        </div>
+        <div className="fixed w-full bottom-0 left-0 p-5 pb-10 bg-neutral-800 flex justify-between items-center">
+          <span className="font-semibold text-lg">
+            {formatToWon(product.price)}원
+          </span>
           <Link
-            className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
-            href={`/product/edit/${id}`}
+            className="bg-green-500 px-5 py-2.5 rounded-md text-white font-semibold"
+            href={``}
           >
-            편집
+            채팅하기
           </Link>
-        ) : null}
-        <Link
-          className="bg-green-500 px-5 py-2.5 rounded-md text-white font-semibold"
-          href={``}
-        >
-          채팅하기
-        </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
