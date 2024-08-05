@@ -13,3 +13,5 @@ export const USERNAME_MAX_LENGTH = 10;
 
 export const TOKEN_MIN = 100000;
 export const TOKEN_MAX = 999999;
+
+export const AVATAR_SIZE = 28;
