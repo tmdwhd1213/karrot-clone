@@ -1,10 +1,10 @@
+import LikeButton from "@/components/like-button";
 import { AVATAR_SIZE } from "@/lib/constants";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToTimeAgo } from "@/lib/utils";
-import { EyeIcon, HandThumbUpIcon as OnLike } from "@heroicons/react/24/solid";
-import { HandThumbUpIcon as OffLike } from "@heroicons/react/24/solid";
-import { unstable_cache as nextCache, revalidateTag } from "next/cache";
+import { EyeIcon } from "@heroicons/react/24/solid";
+import { unstable_cache as nextCache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -90,35 +90,6 @@ export default async function PostDetail({
   if (!post) {
     return notFound();
   }
-  const likePost = async () => {
-    "use server";
-    const session = await getSession();
-    try {
-      await db.like.create({
-        data: {
-          postId,
-          userId: session.id!,
-        },
-      });
-      revalidateTag(`like-status-${postId}`);
-    } catch (e) {}
-  };
-
-  const dislikePost = async () => {
-    "use server";
-    const session = await getSession();
-    try {
-      await db.like.delete({
-        where: {
-          id: {
-            postId,
-            userId: session.id!,
-          },
-        },
-      });
-      revalidateTag(`like-status-${postId}`);
-    } catch (e) {}
-  };
 
   const { likeCount, isLiked } = await getCachedLikeStatus(postId);
 
@@ -146,21 +117,7 @@ export default async function PostDetail({
           <EyeIcon className="size-5" />
           <span>{post.views}명이 봤어요</span>
         </div>
-        <form action={isLiked ? dislikePost : likePost}>
-          <button
-            className={`flex *:mx-[1px] items-center gap-2 text-neutral-400 text-sm border border-neutral-400 rounded-full p-2 hover:bg-neutral-800 transition-colors ${
-              isLiked ? "bg-green-500 text-white border-green-500" : ""
-            }`}
-          >
-            {isLiked ? (
-              <OnLike className="size-5" />
-            ) : (
-              <OffLike className="size-5" />
-            )}
-
-            <span>{likeCount ? likeCount : "공감하기"}</span>
-          </button>
-        </form>
+        <LikeButton isLiked={isLiked} likeCount={likeCount} postId={postId} />
       </div>
     </div>
   );

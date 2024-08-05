@@ -13,3 +13,7 @@
 - 몰랐던 것.
   1. dev모드에서는 모든 페이지가 dynamic처럼 작동한다. (따라서 static처럼 구현하기 위해 unstable_cache를 사용)
   2. generateStaticParams 함수는 Next.js에서 지정한 함수로 Array를 리턴해야함. (ex. productDetail 함수가 받을 가능성이 있는 parameter들이 들어있는 Array)
+
+# Optimistic Response
+
+- 마치 백엔드에서 mutation(사용자가 데이터를 보내면 db에서 수정, 생성 등의 액션을 하는 것)이 성공한 것처럼 UI를 수정하는 것 -> (React의 useOptimistic hook 이용)
