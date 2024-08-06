@@ -4,11 +4,14 @@ import { createComment } from "@/app/posts/[id]/actions";
 import CommentButton from "./comment-button";
 import { Suspense, useOptimistic } from "react";
 import { useFormState } from "react-dom";
+import Comments from "./comments";
+import { formatToTimeAgo } from "@/lib/utils";
 
 interface CommentsProps {
   payload: string;
   id: number;
   userId: number;
+  created_at: Date;
   user: {
     username: string;
     avatar: string | null;
@@ -19,12 +22,12 @@ export default function AddComment({
   id,
   sessionId,
   comments,
-  user,
+  commentsAmount,
 }: {
   id: number;
   sessionId: number;
   comments: CommentsProps[];
-  user: { username: string; avatar: string | null };
+  commentsAmount: number;
 }) {
   const [optimisticState, reducerFn] = useOptimistic(
     comments,
@@ -37,9 +40,9 @@ export default function AddComment({
     const newComment = {
       payload: formData.get("comment")?.toString()!,
       id,
+      created_at: new Date(),
       userId: sessionId,
       user: {
-        created_at: new Date(),
         username: "optimistic",
         avatar: null,
       },
@@ -56,9 +59,31 @@ export default function AddComment({
     <>
       <Suspense
         fallback={<span className="loading loading-bars loading-sm"></span>}
-      />
-      <form className="flex gap-2 justify-center items-center w-full fixed bottom-2 left-0">
+      >
+        <ul className="mt-3 bg-neutral-800 p-5 text-white">
+          <li className="text-neutral-300 mb-3 text-sm">
+            댓글 {commentsAmount}
+          </li>
+          {optimisticState.map(({ id, payload, user, userId, created_at }) => (
+            <Comments
+              key={id}
+              id={id}
+              payload={payload}
+              sessionId={sessionId}
+              user={user}
+              userId={userId}
+              createdAt={formatToTimeAgo(created_at.toString())}
+            />
+          ))}
+        </ul>
+      </Suspense>
+      <form
+        action={action}
+        className="flex gap-2 justify-center items-center w-full fixed bottom-2 left-0"
+      >
         <input
+          type="text"
+          name="comment"
           className="placeholder:text-neutral-400 bg-neutral-700 rounded-full w-[620px]"
           placeholder="댓글을 입력해주세요."
         />

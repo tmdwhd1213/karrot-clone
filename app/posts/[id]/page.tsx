@@ -8,6 +8,9 @@ import { unstable_cache as nextCache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getComment } from "../add/actions";
+import AddComment from "@/components/add-comment";
+import Comments from "@/components/comments";
+import UpperTabBar from "@/components/upper-tab-bar";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const post = await getCachedPost(+params.id);
@@ -69,6 +72,20 @@ async function getPost(id: number) {
             avatar: true,
           },
         },
+        Comments: {
+          select: {
+            id: true,
+            payload: true, // comment String
+            userId: true, // userId of comment
+            created_at: true,
+            user: {
+              select: {
+                avatar: true,
+                username: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             Comments: true,
@@ -98,26 +115,27 @@ export default async function PostDetail({
   if (!post) {
     return notFound();
   }
-
+  const { user: postUser, Comments: postComments } = post;
   const { likeCount, isLiked } = await getCachedLikeStatus(postId);
-  const comments = await getComment(postId);
+  const session = await getSession();
   return (
     <>
-      <div className="p-5 text-white bg-neutral-800">
+      <UpperTabBar id={postId} isOwner={false} />
+      <div className="p-5 pt-24 text-white bg-neutral-800">
         <div className="flex items-center gap-2">
-          {post.user.avatar ? (
+          {postUser.avatar ? (
             <Image
               width={AVATAR_SIZE}
               height={AVATAR_SIZE}
               className="size-9 rounded-full"
-              src={post.user.avatar!}
-              alt={post.user.username}
+              src={postUser.avatar!}
+              alt={postUser.username}
             />
           ) : (
             <UserIcon className="size-9 rounded-full" />
           )}
           <div className="ml-1">
-            <span className="text-md font-semibold">{post.user.username}</span>
+            <span className="text-md font-semibold">{postUser.username}</span>
             <div className="text-xs text-neutral-400 mt-[2px]">
               <span>{formatToTimeAgo(post.created_at.toString())}</span>
             </div>
@@ -133,37 +151,12 @@ export default async function PostDetail({
           <LikeButton isLiked={isLiked} likeCount={likeCount} postId={postId} />
         </div>
       </div>
-      <ul className="mt-3 bg-neutral-800 p-5 text-white">
-        <li className="text-neutral-300 mb-3 text-sm">
-          댓글 {post._count.Comments}
-        </li>
-        {comments?.map((comment, id) => (
-          <li key={id} className="mt-3">
-            <div className="flex items-center gap-2">
-              {comment.user.avatar ? (
-                <Image
-                  width={AVATAR_SIZE}
-                  height={AVATAR_SIZE}
-                  className="size-9 rounded-full"
-                  src={post.user.avatar!}
-                  alt={post.user.username}
-                />
-              ) : (
-                <UserIcon className="size-9 rounded-full" />
-              )}
-              <div className="ml-1">
-                <span className="text-md font-semibold">
-                  {post.user.username}
-                </span>
-                <div className="text-xs text-neutral-400 mt-[2px]">
-                  <span>{formatToTimeAgo(post.created_at.toString())}</span>
-                </div>
-              </div>
-            </div>
-            <section className="ml-12">{comment.payload}</section>
-          </li>
-        ))}
-      </ul>
+      <AddComment
+        comments={postComments}
+        id={postId}
+        sessionId={session.id!}
+        commentsAmount={post._count.Comments}
+      />
     </>
   );
 }
