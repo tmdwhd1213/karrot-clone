@@ -23,4 +23,8 @@
     rounded-md text-center
     hover:bg-green-400 transition-colors;
   }
+
+  .not-first-child\:justify-center:not(:first-child) {
+    @apply justify-center;
+  }
 }

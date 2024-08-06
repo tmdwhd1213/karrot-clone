@@ -79,8 +79,8 @@ export default async function ProductDetail({
 
   return (
     <>
-      <UpperTabBar id={id} isOwner={isOwner} />
       <div>
+        <UpperTabBar id={id} isOwner={isOwner} />
         <div className="flex flex-col">
           <div className="relative aspect-square">
             <Image
