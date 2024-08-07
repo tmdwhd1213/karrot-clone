@@ -4,14 +4,43 @@ export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
 
+// export function formatToTimeAgo(date: string): string {
+//   const DAY_IN_MS = 1000 * 60 * 60 * 24;
+//   const TIME = new Date(date).getTime();
+//   const NOW = new Date().getTime();
+//   const DIFF = Math.round((TIME - NOW) / DAY_IN_MS);
+//   const formatter = new Intl.RelativeTimeFormat("ko");
+
+//   return formatter.format(DIFF, "days").toString();
+// }
+
 export function formatToTimeAgo(date: string): string {
-  const DAY_IN_MS = 1000 * 60 * 60 * 24;
+  function time(unitInMs: number, unit: Intl.RelativeTimeFormatUnit): string {
+    const times = Math.round(DIFF / unitInMs);
+    return formatter.format(-times, unit).toString();
+  }
+
+  const SECONDS_IN_MS = 1000;
+  const MINUTES_IN_MS = SECONDS_IN_MS * 60;
+  const HOURS_IN_MS = MINUTES_IN_MS * 60;
+  const DAYS_IN_MS = HOURS_IN_MS * 24;
+
   const TIME = new Date(date).getTime();
   const NOW = new Date().getTime();
-  const DIFF = Math.round((TIME - NOW) / DAY_IN_MS);
+  const DIFF = NOW - TIME;
+
   const formatter = new Intl.RelativeTimeFormat("ko");
 
-  return formatter.format(DIFF, "days").toString();
+  switch (true) {
+    // case DIFF < MINUTES_IN_MS:
+    //   return time(SECONDS_IN_MS, "seconds");
+    case DIFF < HOURS_IN_MS:
+      return time(MINUTES_IN_MS, "minutes");
+    case DIFF < DAYS_IN_MS:
+      return time(HOURS_IN_MS, "hours");
+    default:
+      return time(DAYS_IN_MS, "days");
+  }
 }
 
 // Github response, request

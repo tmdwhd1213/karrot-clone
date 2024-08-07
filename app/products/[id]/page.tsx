@@ -92,7 +92,8 @@ export default async function ProductDetail({
         id: true,
       },
     });
-    redirect(`/chats/${room.id}`);
+    // redirect(`/chats/${room.id}`);
+    redirect(`/chats/clzjajj8w00031qwuvmfucn9y`); // 임시
   };
 
   return (

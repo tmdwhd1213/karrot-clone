@@ -17,3 +17,8 @@ export const TOKEN_MAX = 999999;
 export const AVATAR_SIZE = 28;
 
 export const CHAT_AVATAR_SIZE = 50;
+
+export const SUPABASE_PUBLIC_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93b21neWlnb3l5eWl5dGxzZnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI5NTg2MDEsImV4cCI6MjAzODUzNDYwMX0.u7IvloefO1BHcQ_X-IpkpYBZHKML7KRuetG4g0qcUeY";
+
+export const SUPABASE_URL = "https://owomgyigoyyyiytlsfvx.supabase.co";
