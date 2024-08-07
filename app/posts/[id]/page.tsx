@@ -7,9 +7,7 @@ import { EyeIcon, UserIcon } from "@heroicons/react/24/solid";
 import { unstable_cache as nextCache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getComment } from "../add/actions";
 import AddComment from "@/components/add-comment";
-import Comments from "@/components/comments";
 import UpperTabBar from "@/components/upper-tab-bar";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -72,7 +70,7 @@ async function getPost(id: number) {
             avatar: true,
           },
         },
-        Comments: {
+        comments: {
           select: {
             id: true,
             payload: true, // comment String
@@ -88,7 +86,7 @@ async function getPost(id: number) {
         },
         _count: {
           select: {
-            Comments: true,
+            comments: true,
             // Likes: true,
           },
         },
@@ -115,7 +113,7 @@ export default async function PostDetail({
   if (!post) {
     return notFound();
   }
-  const { user: postUser, Comments: postComments } = post;
+  const { user: postUser, comments: postComments } = post;
   const { likeCount, isLiked } = await getCachedLikeStatus(postId);
   const session = await getSession();
   return (
@@ -155,7 +153,7 @@ export default async function PostDetail({
         comments={postComments}
         id={postId}
         sessionId={session.id!}
-        commentsAmount={post._count.Comments}
+        commentsAmount={post._count.comments}
       />
     </>
   );

@@ -15,3 +15,5 @@ export const TOKEN_MIN = 100000;
 export const TOKEN_MAX = 999999;
 
 export const AVATAR_SIZE = 28;
+
+export const CHAT_AVATAR_SIZE = 50;
