@@ -10,7 +10,7 @@ import UpperTabBar from "@/components/upper-tab-bar";
 
 // [id]를 db조회한 후 미리 알려줘서 dynamic page를 static page로 바꾸기.
 // 쿠키를 import하면 pre-render를 사용할 수 없음.
-export async function getIsOwner(userId: number) {
+async function getIsOwner(userId: number) {
   const session = await getSession();
   if (session.id) {
     return session.id === userId;

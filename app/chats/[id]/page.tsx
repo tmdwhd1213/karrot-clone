@@ -67,6 +67,7 @@ async function getUserProfile() {
 
 export default async function Chats({ params }: { params: { id: string } }) {
   const room = await getRoom(params.id);
+  console.log(room);
 
   if (!room) {
     return notFound();

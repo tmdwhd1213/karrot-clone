@@ -11,6 +11,10 @@ const config: Config = {
       borderRadius: {
         "sexy-name": "11.11px",
       },
+      fontFamily: {
+        noto: "var(--noto-text)",
+        rubick: "var(--test-text)"
+      }
     },
   },
   plugins: [require("@tailwindcss/forms")],
