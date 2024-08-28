@@ -1,5 +1,4 @@
 import db from "@/lib/db";
-// import getSession from "@/lib/session";
 import { formatToWon, getProduct } from "@/lib/utils";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
@@ -74,26 +73,56 @@ export default async function ProductDetail({
 
   const createChatRoom = async () => {
     "use server";
+
     const session = await getSession();
-    const room = await db.chatRoom.create({
-      data: {
+
+    // 특정 거래와 관련된 기존 채팅방이 있는지 확인
+    const existingRoom = await db.chatRoom.findFirst({
+      where: {
         users: {
-          connect: [
-            {
-              id: product.userId, // 판매자
+          every: {
+            id: {
+              in: [product.userId, session.id!],
             },
-            {
-              id: session.id, // 구매자
-            },
-          ],
+          },
+        },
+        product: {
+          id: product.id, // 동일한 거래에 대한 채팅방만 확인
         },
       },
       select: {
         id: true,
       },
     });
-    // redirect(`/chats/${room.id}`);
-    redirect(`/chats/clzjajj8w00031qwuvmfucn9y`); // 임시
+
+    if (existingRoom) {
+      redirect(`/chats/${existingRoom.id}`);
+    } else {
+      // 새로운 채팅방 생성
+      const room = await db.chatRoom.create({
+        data: {
+          users: {
+            connect: [
+              {
+                id: product.userId,
+              },
+              {
+                id: session.id,
+              },
+            ],
+          },
+          product: {
+            connect: {
+              id: product.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      redirect(`/chats/${room.id}`);
+    }
   };
 
   return (
@@ -135,11 +164,13 @@ export default async function ProductDetail({
           <span className="font-semibold text-lg">
             {formatToWon(product.price)}원
           </span>
-          <form action={createChatRoom}>
-            <button className="bg-green-500 px-5 py-2.5 rounded-md text-white font-semibold">
-              채팅하기
-            </button>
-          </form>
+          {!isOwner && (
+            <form action={createChatRoom}>
+              <button className="bg-green-500 px-5 py-2.5 rounded-md text-white font-semibold">
+                채팅하기
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </>

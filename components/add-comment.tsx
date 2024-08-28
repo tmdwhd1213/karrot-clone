@@ -2,7 +2,7 @@
 
 import { createComment } from "@/app/posts/[id]/actions";
 import CommentButton from "./comment-button";
-import { Suspense, useOptimistic } from "react";
+import { Suspense, useOptimistic, useRef } from "react";
 import { useFormState } from "react-dom";
 import Comments from "./comments";
 import { formatToTimeAgo } from "@/lib/utils";
@@ -34,6 +34,9 @@ export default function AddComment({
     (previousComments, payload: CommentsProps) => [...previousComments, payload]
   );
 
+  // input의 ref 생성
+  const commentInputRef = useRef<HTMLInputElement>(null);
+
   //여기서 server action을 intercept해서 필요한 작업 수행 (나중에 다시 확인!)
   const interceptAction = async (_: any, formData: FormData) => {
     // formData 이용해서 newComment 생성
@@ -51,6 +54,12 @@ export default function AddComment({
     // optimistic
     reducerFn(newComment);
     formData.append("postId", id + "");
+
+    // input 필드 초기화
+    if (commentInputRef.current) {
+      commentInputRef.current.value = "";
+    }
+
     return createComment(null, formData);
   };
   const [, action] = useFormState(interceptAction, null);
@@ -84,6 +93,7 @@ export default function AddComment({
         <input
           type="text"
           name="comment"
+          ref={commentInputRef}
           className="placeholder:text-neutral-400 bg-neutral-700 rounded-full w-[620px]"
           placeholder="댓글을 입력해주세요."
         />

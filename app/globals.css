@@ -28,3 +28,12 @@
     @apply justify-center;
   }
 }
+
+/* Webkit 기반 브라우저 (Chrome, Safari 등) */
+progress::-webkit-progress-bar {
+  background-color: #eee; /* 전체 progress 바의 배경 색 */
+}
+
+progress::-webkit-progress-value {
+  background-color: #22c55e; /* 채워진 부분의 색 */
+}
